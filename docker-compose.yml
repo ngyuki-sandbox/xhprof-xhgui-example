@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+
+  php:
+    hostname: php
+    build:
+      context: ./
+    ports:
+      - 8080:8080
+    volumes:
+      - ./:/app/:rw
+      - ./config/:/usr/local/src/xhgui/config/:ro
+    working_dir: /app
+    command:
+      - sh
+      - -c
+      - |
+        exec php -S 0.0.0.0:8080 \
+          -d auto_prepend_file=/usr/local/src/xhgui/external/header.php \
+          -d error_reporting=-1 \
+          -d display_errors=1 \
+          -d display_startup_errors=1
+
+  xhgui:
+    hostname: xhgui
+    image: edyan/xhgui
+    ports:
+      - 9000:80
+    volumes:
+      - ./config/:/usr/local/src/xhgui/config/:ro
